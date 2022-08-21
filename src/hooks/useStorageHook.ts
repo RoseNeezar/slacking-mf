@@ -1,10 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-export const useStorageHook = (
+type SetValue<T> = Dispatch<SetStateAction<T>>;
+
+export const useStorageHook = <T>(
   key: string,
-  defaultValue: string | Function = "",
+  defaultValue: T,
   { serialize = JSON.stringify, deserialize = JSON.parse } = {}
-): [string | null, React.Dispatch<string | null>] => {
+): [T, SetValue<T>] => {
   const [state, setState] = useState(() => {
     const val = window.localStorage.getItem(key);
     if (val) {

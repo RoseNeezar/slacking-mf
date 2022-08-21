@@ -1,9 +1,11 @@
 // @ts-nocheck
 import * as React from "react";
-const init = Array(9).fill(null);
+import { useStorageHook } from "./hooks/useStorageHook";
+const init: [] = Array(9).fill(null);
 function Board() {
   // 🐨 squares is the state for this component. Add useState for squares
-  const [squares, setSquares] = React.useState(init);
+  // const [squares, setSquares] = React.useState(init);
+  const [squares, setSquares] = useStorageHook("squares", init);
 
   const nextValue = calculateNextValue(squares);
   const winner = calculateWinner(squares);

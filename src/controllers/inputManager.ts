@@ -9,7 +9,7 @@ export default class InputManager {
   }
 
   unsubscribe(fn: Function) {
-    this.observers = this.observers.filter((sub) => sub != fn);
+    this.observers = this.observers.filter((sub) => sub !== fn);
   }
 
   broadcast(action: string, data: unknown) {
@@ -17,19 +17,20 @@ export default class InputManager {
   }
 
   handleKeys = (ev: KeyboardEvent | Event) => {
-    ev.preventDefault();
+    // ev.preventDefault();
+    ev.stopPropagation();
     switch ((ev as KeyboardEvent).key as KeyboardEventKey) {
-      case "ArrowLeft":
+      case "a":
         this.broadcast("move", { x: -1, y: 0 });
         break;
-      case "ArrowUp":
-        this.broadcast("move", { x: 0, y: 1 });
+      case "w":
+        this.broadcast("move", { x: 0, y: -1 });
         break;
-      case "ArrowRight":
+      case "d":
         this.broadcast("move", { x: 1, y: 0 });
         break;
-      case "ArrowDown":
-        this.broadcast("move", { x: 0, y: -1 });
+      case "s":
+        this.broadcast("move", { x: 0, y: 1 });
         break;
       default:
         break;
@@ -37,7 +38,7 @@ export default class InputManager {
   };
 
   bindKeys() {
-    document.addEventListener("keydown", this.handleKeys);
+    document.addEventListener("keydown", this.handleKeys, {});
   }
 
   unbindKeys() {

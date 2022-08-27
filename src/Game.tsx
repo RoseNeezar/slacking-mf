@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from "react";
 import InputManager from "./controllers/inputManager";
+import Player from "./controllers/PlayerController";
 
 interface IGame {
   width: number;
@@ -9,17 +10,20 @@ interface IGame {
 
 const Game: FC<IGame> = ({ height, tileSizr, width }) => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const [player, setPlayer] = React.useState({ x: 64, y: 128 });
   let inputManager = React.useMemo(() => new InputManager(), []);
+
+  const [player, setPlayer] = React.useState(
+    () => new Player({ x: 0, y: 2, size: tileSizr })
+  );
 
   const handleInput = useCallback(
     (action: string, data: { x: number; y: number }) => {
-      const newPlayer = structuredClone(player);
-      newPlayer.x += data.x * tileSizr;
-      newPlayer.y += data.y * tileSizr;
+      const newPlayer: Player = new Player();
+      Object.assign(newPlayer, player);
+      newPlayer.move(data.x, data.y);
       setPlayer(newPlayer);
     },
-    [player, tileSizr]
+    [player]
   );
 
   React.useEffect(() => {
@@ -37,8 +41,7 @@ const Game: FC<IGame> = ({ height, tileSizr, width }) => {
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, width * tileSizr, height * tileSizr);
-    ctx.fillStyle = "#";
-    ctx.fillRect(player.x, player.y, tileSizr, tileSizr);
+    player.draw(ctx);
   }, [height, tileSizr, width, player]);
 
   return (

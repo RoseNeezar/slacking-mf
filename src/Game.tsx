@@ -1,6 +1,6 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useRef } from "react";
 import InputManager from "./controllers/inputManager";
-import Player from "./controllers/PlayerController";
+import WorldController from "./controllers/WorldController";
 
 interface IGame {
   width: number;
@@ -10,21 +10,41 @@ interface IGame {
 
 const Game: FC<IGame> = ({ height, tileSizr, width }) => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  let inputManager = React.useMemo(() => new InputManager(), []);
-
-  const [player, setPlayer] = React.useState(
-    () => new Player({ x: 0, y: 2, size: tileSizr })
+  const hasRender = useRef<boolean | null>(false);
+  const [world, setWorld] = React.useState(
+    () =>
+      new WorldController({
+        height,
+        width,
+        tileSize: tileSizr,
+      })
+  );
+  let inputManager = React.useMemo(
+    () => new InputManager(world.playerEntity),
+    []
   );
 
   const handleInput = useCallback(
     (action: string, data: { x: number; y: number }) => {
-      const newPlayer: Player = new Player();
-      Object.assign(newPlayer, player);
-      newPlayer.move(data.x, data.y);
-      setPlayer(newPlayer);
+      const newWorld = new WorldController();
+      Object.assign(newWorld, world);
+      newWorld.movePlayer(data.x, data.y);
+      setWorld(newWorld);
     },
-    [player]
+    [world]
   );
+
+  React.useEffect(() => {
+    if (!hasRender.current) {
+      const newWorld = new WorldController();
+      Object.assign(newWorld, world);
+      newWorld.createCellularMap();
+      newWorld.initEntity(world.playerEntity);
+      setWorld(newWorld);
+
+      hasRender.current = true;
+    }
+  }, [world]);
 
   React.useEffect(() => {
     inputManager.bindKeys();
@@ -41,8 +61,9 @@ const Game: FC<IGame> = ({ height, tileSizr, width }) => {
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, width * tileSizr, height * tileSizr);
-    player.draw(ctx);
-  }, [height, tileSizr, width, player]);
+    world.playerEntity.handlePlayerFrame();
+    world.draw(ctx);
+  }, [width, tileSizr, height, world]);
 
   return (
     <canvas

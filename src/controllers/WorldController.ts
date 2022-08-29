@@ -38,6 +38,13 @@ export default class WorldController {
   movePlayer(dx: number, dy: number) {
     let tmpPlayer = this.playerEntity.copyPlayer();
     tmpPlayer.move(dx, dy);
+
+    const entity = this.getEntityAtLocation(tmpPlayer.x, tmpPlayer.y) as any;
+    if (entity) {
+      entity.action("bump", this);
+      return;
+    }
+
     if (this.isWall(tmpPlayer.x, tmpPlayer.y)) {
       console.log("hit walls");
     } else {
@@ -45,9 +52,9 @@ export default class WorldController {
     }
   }
 
-  initEntity(entity: Player) {
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
+  initEntity(entity: any) {
+    for (let x = entity.x; x < this.width; x++) {
+      for (let y = entity.y; y < this.height; y++) {
         if (this.worldMap[x][y] === 0) {
           entity.x = x;
           entity.y = y;
@@ -55,6 +62,14 @@ export default class WorldController {
         }
       }
     }
+  }
+
+  add(entity: any) {
+    this.entities.push(entity);
+  }
+
+  remove(entity: any) {
+    this.entities = this.entities.filter((e) => e !== entity);
   }
 
   createCellularMap() {
@@ -77,7 +92,10 @@ export default class WorldController {
         this.worldMap[i][j] === 1 && this.drawWall(context, i, j);
       }
     }
-    this.playerEntity.draw(context);
+
+    this.entities.forEach((e: any) => {
+      e.draw(context);
+    });
   }
 
   drawWall(context: CanvasRenderingContext2D, x: number, y: number) {
@@ -96,5 +114,9 @@ export default class WorldController {
       this.worldMap[y] === undefined ||
       this.worldMap[x][y] === 1
     );
+  }
+
+  getEntityAtLocation(x: number, y: number) {
+    return this.entities.find((e: any) => e.x === x && e.y === y);
   }
 }

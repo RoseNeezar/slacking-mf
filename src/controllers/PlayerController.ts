@@ -14,6 +14,7 @@ export default class Player {
   height = 82;
   frameX = 0;
   frameY = 0;
+  inventory = [] as any[];
 
   moving = false;
 
@@ -26,6 +27,10 @@ export default class Player {
     this.image.src = "img/feral.png";
   }
 
+  add(item: unknown) {
+    this.inventory.push(item);
+  }
+
   move(dx: number, dy: number) {
     this.x += dx;
     this.y += dy;
@@ -34,32 +39,34 @@ export default class Player {
   draw(context: CanvasRenderingContext2D) {
     context.imageSmoothingEnabled = false;
     if (!this.image.complete) {
-      this.image.onload = () => {
-        context.drawImage(
-          this.image,
-          this.width,
-          this.height * this.frameY,
-          this.width,
-          this.height,
-          this.x * this.size,
-          this.y * this.size,
-          this.size,
-          this.size
-        );
-      };
-    } else {
-      context.drawImage(
-        this.image,
-        0,
-        this.height * this.frameY,
-        this.width,
-        this.height,
-        this.x * this.size,
-        this.y * this.size,
-        this.size,
-        this.size
-      );
+      return new Promise((resolve) => {
+        this.image.onload = () => {
+          context.drawImage(
+            this.image,
+            0,
+            this.height * this.frameY,
+            this.width,
+            this.height,
+            this.x * this.size,
+            this.y * this.size,
+            this.size,
+            this.size
+          );
+          resolve("done");
+        };
+      });
     }
+    context.drawImage(
+      this.image,
+      0,
+      this.height * this.frameY,
+      this.width,
+      this.height,
+      this.x * this.size,
+      this.y * this.size,
+      this.size,
+      this.size
+    );
   }
 
   handlePlayerFrame() {

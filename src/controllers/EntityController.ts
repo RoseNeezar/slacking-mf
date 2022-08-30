@@ -1,3 +1,5 @@
+import WorldController from "./WorldController";
+
 interface IEntity {
   x: number;
   y: number;
@@ -15,7 +17,7 @@ export default class EntityController {
     this.size = size;
     this.attributes = { ...attributes };
   }
-  action(verb: string, world: any) {}
+  action(verb: string, world: WorldController) {}
 
   draw(context: CanvasRenderingContext2D) {
     context.fillStyle = this.attributes.color || "white";

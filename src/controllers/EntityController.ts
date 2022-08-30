@@ -15,9 +15,7 @@ export default class EntityController {
     this.size = size;
     this.attributes = { ...attributes };
   }
-  action(verb: string, world: any) {
-    console.log("Verb--", verb);
-  }
+  action(verb: string, world: any) {}
 
   draw(context: CanvasRenderingContext2D) {
     context.fillStyle = this.attributes.color || "white";

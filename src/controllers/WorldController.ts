@@ -13,6 +13,7 @@ export default class WorldController {
   tileSize: number;
   worldMap: number[][];
   entities: unknown[];
+  history: string[];
 
   constructor({ height = 1, tileSize = 20, width = 1 }: Partial<IWorld> = {}) {
     this.width = width;
@@ -22,6 +23,7 @@ export default class WorldController {
     for (let i = 0; i < this.width; i++) {
       this.worldMap[i] = new Array(this.height);
     }
+    this.history = ["Welcome!", "----"];
     this.entities = [
       new Player({
         x: 0,
@@ -55,7 +57,7 @@ export default class WorldController {
   initEntity(entity: any) {
     for (let x = entity.x; x < this.width; x++) {
       for (let y = entity.y; y < this.height; y++) {
-        if (this.worldMap[x][y] === 0) {
+        if (this.worldMap[x][y] === 0 && !this.getEntityAtLocation(x, y)) {
           entity.x = x;
           entity.y = y;
           return;
@@ -118,5 +120,12 @@ export default class WorldController {
 
   getEntityAtLocation(x: number, y: number) {
     return this.entities.find((e: any) => e.x === x && e.y === y);
+  }
+
+  addToHistory(data: string) {
+    this.history.push(data);
+    if (this.history.length > 6) {
+      this.history.shift();
+    }
   }
 }

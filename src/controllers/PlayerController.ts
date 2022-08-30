@@ -14,6 +14,7 @@ export default class Player {
   height = 82;
   frameX = 0;
   frameY = 0;
+  health = 100;
   inventory = [] as any[];
 
   moving = false;
@@ -32,6 +33,7 @@ export default class Player {
   }
 
   move(dx: number, dy: number) {
+    if (this.health <= 0) return;
     this.x += dx;
     this.y += dy;
   }

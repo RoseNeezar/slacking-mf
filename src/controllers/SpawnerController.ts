@@ -1,4 +1,5 @@
 import LootController from "./LootController";
+import { MonsterController } from "./MonsterController";
 import WorldController from "./WorldController";
 
 const lootTable = [
@@ -10,6 +11,29 @@ const lootTable = [
     color: "lightgrey",
     ascii: "#",
     offset: { x: 4, y: 3 },
+  },
+];
+const monsterTable = [
+  {
+    name: "Ogre magi",
+    color: "darkgrey",
+    ascii: "0",
+    offset: { x: 6, y: 8 },
+    health: 6,
+  },
+  {
+    name: "Anti mage",
+    color: "red",
+    ascii: "AM",
+    offset: { x: 2, y: 1 },
+    health: 6,
+  },
+  {
+    name: "Axe",
+    color: "yellow",
+    ascii: "AX",
+    offset: { x: 7, y: 3 },
+    health: 6,
   },
 ];
 
@@ -31,10 +55,21 @@ export default class SpawnerController {
   spawnLoot(spawnCount: number) {
     this.spawn(spawnCount, () => {
       return new LootController({
-        x: randomInt(this.world.width),
-        y: randomInt(this.world.height),
+        x: randomInt(this.world.width - 1),
+        y: randomInt(this.world.height - 1),
         size: this.world.tileSize,
         attributes: lootTable[randomInt(lootTable.length)],
+      });
+    });
+  }
+
+  spawnMonster(spawnCount: number) {
+    this.spawn(spawnCount, () => {
+      return new MonsterController({
+        x: randomInt(this.world.width - 1),
+        y: randomInt(this.world.height - 1),
+        size: this.world.tileSize,
+        attributes: monsterTable[randomInt(monsterTable.length)],
       });
     });
   }

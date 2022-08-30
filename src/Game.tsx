@@ -43,6 +43,7 @@ const Game: FC<IGame> = ({ height, tileSizr, width }) => {
 
     let spawner = new SpawnerController(newWorld);
     spawner.spawnLoot(10);
+    spawner.spawnMonster(6);
     setWorld(newWorld);
   }, [world]);
 
@@ -87,6 +88,11 @@ const Game: FC<IGame> = ({ height, tileSizr, width }) => {
       <ul>
         {world.playerEntity.inventory.map((r, i) => {
           return <li key={i}>{r.attributes.name}</li>;
+        })}
+      </ul>
+      <ul>
+        {world.history.map((r, i) => {
+          return <li key={i}>{r}</li>;
         })}
       </ul>
     </>

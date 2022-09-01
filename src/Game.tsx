@@ -44,6 +44,7 @@ const Game: FC<IGame> = ({ height, tileSizr, width }) => {
     let spawner = new SpawnerController(newWorld);
     spawner.spawnLoot(10);
     spawner.spawnMonster(6);
+    spawner.spawnPortal();
     setWorld(newWorld);
   }, [world]);
 

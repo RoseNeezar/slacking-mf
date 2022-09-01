@@ -1,5 +1,6 @@
 import LootController from "./LootController";
 import { MonsterController } from "./MonsterController";
+import PortalController from "./PortalController";
 import WorldController from "./WorldController";
 
 const lootTable = [
@@ -72,6 +73,17 @@ export default class SpawnerController {
         attributes: monsterTable[randomInt(monsterTable.length)],
       });
     });
+  }
+
+  spawnPortal() {
+    let portal = new PortalController({
+      x: this.world.width - 10,
+      y: this.world.height - 10,
+      size: this.world.tileSize,
+      attributes: {},
+    });
+    this.world.add(portal);
+    this.world.initEntity(portal);
   }
 }
 
